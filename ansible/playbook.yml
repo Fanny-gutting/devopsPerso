@@ -1,0 +1,35 @@
+- name: Install PHP, Nginx and MySQL
+  hosts: all
+  become: yes
+  
+  tasks:
+    - name: Install PHP
+      when: "'appserver' in devops-packer"
+      # groupe azur
+      apt: name=php7.0-fpm state=installed
+      
+    - name: Install Nginx
+      when: "'webserver' in devops-packer"
+      apt: name=nginx state=installed
+      
+    - name: Install MySQL
+      when: "'databaseserver' in devops-packer"
+      apt: name=mysql-server state=installed
+      
+- name: Clone repository from GitHub
+  hosts: appserver:webserver
+  become: yes
+  
+  tasks:
+    - name: Clone repository
+      git:
+        repo: https://github.com/Fanny-gutting/devopsPerso.git
+        dest: /var/www/devopsPerso
+        version: master
+        
+    - name: Set ownership and permissions
+      file:
+        path: /var/www/devopsPerso
+        owner: www-data
+        group: www-data
+        mode: 0755

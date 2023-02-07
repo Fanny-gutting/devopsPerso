@@ -1,0 +1,102 @@
+{
+  "variables": {
+      "client_id": "98439127-4948-4e20-a229-df280b1b5c97",
+      "client_secret": "Xdc8Q~WzLQAx0pSPe7HB58NHx~BTfuBO3OF9PagJ",
+      "tenant_id": "901cb4ca-b862-4029-9306-e5cd0f6d9f86",
+      "subscription_id": "c6f0caf7-cedc-4c43-8e87-022f0c6c4295"
+  },
+  "builders": [
+      {
+          "type": "azure-arm",
+          "client_id": "{{user `client_id`}}",
+          "client_secret": "{{user `client_secret`}}",
+          "tenant_id": "{{user `tenant_id`}}",
+          "subscription_id": "{{user `subscription_id`}}",
+          "managed_image_resource_group_name": "devops-packer",
+          "managed_image_name": "php_nic",
+          "os_type": "Linux",
+          "image_publisher": "Canonical",
+          "image_offer": "UbuntuServer",
+          "image_sku": "18.04-LTS",
+          "communicator": "ssh",
+          "ssh_username": "azureuser",
+          "azure_tags": {
+              "dept": "web",
+              "type": "php"
+          },
+          "disk_caching": "ReadWrite",
+          "storage_account": "{{user `storage_account_name`}}",
+          "use_managed_disks": false,
+          "use_private_ip": true,
+          "virtual_network_name": "packer-network",
+          "subnet_name": "packer-subnet",
+          "capture_container_name": "images",
+          "capture_name_prefix": "php-server"
+      },
+      {
+          "type": "azure-arm",
+          "client_id": "{{user `client_id`}}",
+          "client_secret": "{{user `client_secret`}}",
+          "tenant_id": "{{user `tenant_id`}}",
+          "subscription_id": "{{user `subscription_id`}}",
+          "managed_image_resource_group_name": "devops-packer",
+          "managed_image_name": "mysql-nic",
+          "os_type": "Linux",
+          "image_publisher": "Canonical",
+          "image_offer": "UbuntuServer",
+          "image_sku": "18.04-LTS",
+          "communicator": "ssh",
+          "ssh_username": "azureuser",
+          "azure_tags": {
+              "dept": "database",
+              "type": "mysql"
+          },
+          "disk_caching": "ReadWrite",
+          "storage_account": "{{user `storage_account_name`}}",
+          "use_managed_disks": false,
+          "use_private_ip": true,
+          "virtual_network_name": "packer-network",
+          "subnet_name": "packer-subnet",
+          "capture_container_name": "images",
+          "capture_name_prefix": "mysql-server"
+      },
+      {
+        "type": "azure-arm",
+        "client_id": "{{user client_id}}",
+        "client_secret": "{{user client_secret}}",
+        "tenant_id": "{{user tenant_id}}",
+        "subscription_id": "{{user subscription_id}}",
+        "managed_image_resource_group_name": "devops-packer",
+        "managed_image_name": "nginx-nic",
+        "os_type": "Linux",
+        "image_publisher": "Canonical",
+        "image_offer": "UbuntuServer",
+        "image_sku": "18.04-LTS",
+        "communicator": "ssh",
+        "ssh_username": "azureuser",
+        "azure_tags": {
+        "dept": "web",
+        "type": "nginx"
+      },
+      "disk_caching": "ReadWrite",
+      "storage_account": "{{user storage_account_name}}",
+      "use_managed_disks": false,
+      "use_private_ip": true,
+      "virtual_network_name": "packer-network",
+      "subnet_name": "packer-subnet",
+      "capture_container_name": "images",
+      "capture_name_prefix": "nginx-server"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+      "sudo apt-get update",
+      "sudo apt-get install -y php7.2-fpm",
+      "sudo apt-get install -y mysql-server",
+      "sudo apt-get install -y nginx"
+      ]
+    }
+  ]
+}
